@@ -1,7 +1,8 @@
+import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class Sqldata {
+class Sqldata  extends GetxController{
   static Database? _db;
 
   // دالة لترجيع قاعدة البيانات و التأكد ان كان قد تم انشاءها او لا
@@ -42,6 +43,7 @@ class Sqldata {
     await db.execute('''
 CREATE TABLE "notes" (
 "id" INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,
+"title" TEXT NOT NULL,
 "note" TEXT NOT NULL
 )
 ''');
@@ -59,6 +61,7 @@ CREATE TABLE "notes" (
   insertData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawInsert(sql);
+    update();
     return response;
   }
 
@@ -66,6 +69,7 @@ CREATE TABLE "notes" (
   updateData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawUpdate(sql);
+    update();
     return response;
   }
 
@@ -73,6 +77,11 @@ CREATE TABLE "notes" (
   daleteData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawDelete(sql);
+    update();
+    return response;
+  }
+   Future<List<Map>> readDate() async {
+    List<Map> response = await selectData("select * from 'notes'");
     return response;
   }
 }
